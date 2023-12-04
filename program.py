@@ -2,11 +2,33 @@ import argparse
 import sqlite3
 from datetime import datetime
 
+class QueryStrategy:
+    def execute(self, cursor, value):
+        pass
+
+class QueryByDateStrategy(QueryStrategy):
+    def execute(self, cursor, value):
+        cursor.execute('SELECT * FROM time_records WHERE date = ?', (value,))
+        return cursor.fetchall()
+
+class QueryByTagStrategy(QueryStrategy):
+    def execute(self, cursor, value):
+        cursor.execute('SELECT * FROM time_records WHERE tag LIKE ?', ('%' + value + '%',))
+        return cursor.fetchall()
+
+class QueryByTaskStrategy(QueryStrategy):
+    def execute(self, cursor, value):
+        cursor.execute('SELECT * FROM time_records WHERE task LIKE ?', ('%' + value.strip("'") + '%',))
+        return cursor.fetchall()
+
 class DatabaseManager:
     DATE_FORMAT = '%Y/%m/%d'
     TABLE_NAME = 'time_records'
 
-    def __init__(self, db_name='time_tracker.db'):
+    def __init__(self, db_name=None):
+        if db_name is None:
+            db_name = 'time_tracker.db'
+
         self.conn = sqlite3.connect(db_name)
         self.cursor = self.conn.cursor()
         self.create_table()
@@ -31,20 +53,16 @@ class DatabaseManager:
         ''', (date, start_time, end_time, task, tag))
         self.conn.commit()
 
-    def query_records(self, query):
+    def query_records(self, query, strategy):
         try:
-            datetime.strptime(query, self.DATE_FORMAT)
-            self.cursor.execute(f'SELECT * FROM {self.TABLE_NAME} WHERE date = ?', (query,))
+            query_value = datetime.strptime(query, self.DATE_FORMAT).strftime(self.DATE_FORMAT)
+            return strategy.execute(self.cursor, query_value)
         except ValueError:
             if query.lower() == 'today':
                 today = datetime.now().strftime(self.DATE_FORMAT)
-                self.cursor.execute(f'SELECT * FROM {self.TABLE_NAME} WHERE date = ?', (today,))
-            elif query[0] == ':':
-                self.cursor.execute(f'SELECT * FROM {self.TABLE_NAME} WHERE tag LIKE ?', ('%' + query + '%',))
+                return strategy.execute(self.cursor, today)
             else:
-                self.cursor.execute(f'SELECT * FROM {self.TABLE_NAME} WHERE task LIKE ?', ('%' + query.strip("'") + '%',))
-
-        return self.cursor.fetchall()
+                return strategy.execute(self.cursor, query)
 
     def clear_db(self):
         self.cursor.execute(f'DELETE FROM {self.TABLE_NAME}')
@@ -70,25 +88,38 @@ class RecordCommand:
 class QueryCommand:
     @staticmethod
     def execute(args, time_tracker):
-        records = time_tracker.db_manager.query_records(args.query)
+        if args.query[0] == ':':
+            query_strategy = QueryByTagStrategy()
+        else:
+            query_strategy = QueryByTaskStrategy()
+
+        records = time_tracker.db_manager.query_records(args.query, query_strategy)
 
         for record in records:
             print(record)
 
+class CommandExecutor:
+    def __init__(self, time_tracker):
+        self.time_tracker = time_tracker
+
+    def execute_command(self, args):
+        if args.command == 'record':
+            RecordCommand.execute(args, self.time_tracker)
+        elif args.command == 'query':
+            QueryCommand.execute(args, self.time_tracker)
+        else:
+            print("Invalid command.")
+
 class TimeTrackerCLI:
     def __init__(self):
         self.db_manager = DatabaseManager()
+        self.command_executor = CommandExecutor(self)
 
-    def run_command(self, command_str, args):
-        if command_str == 'record':
-            command = RecordCommand()
-        elif command_str == 'query':
-            command = QueryCommand()
-        else:
-            print("Invalid command.")
-            return
+    def run(self, args):
+        self.command_executor.execute_command(args)
 
-        command.execute(args, self)
+    def close_connection(self):
+        self.db_manager.close_connection()
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Time Tracker CLI')
@@ -109,8 +140,8 @@ def parse_args():
 def main():
     args = parse_args()
     time_tracker = TimeTrackerCLI()
-    time_tracker.run_command(args.command, args)
-    time_tracker.db_manager.close_connection()
+    time_tracker.run(args)
+    time_tracker.close_connection()
 
 if __name__ == '__main__':
     main()
