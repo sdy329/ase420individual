@@ -1,0 +1,9 @@
+Code Smells
+Magic Variables x2
+Long Function
+Code Duplication
+SRP violation
+
+Refactorings
+Extract Constants
+Extract Method x2

@@ -1,0 +1,48 @@
+{
+    "12-1-23":{
+        "header" : {
+            "cloc_url"           : "github.com/AlDanial/cloc",
+            "cloc_version"       : "1.98",
+            "elapsed_seconds"    : 0.00744104385375977,
+            "n_files"            : 1,
+            "n_lines"            : 74,
+            "files_per_second"   : 134.389746876001,
+            "lines_per_second"   : 9944.8412688241
+        },
+          "main.py" :{
+            "blank": 13,
+            "comment": 12,
+            "code": 49,
+            "language": "Python"
+        },
+          "SUM": {
+            "blank": 13,
+            "comment": 12,
+            "code": 49,
+            "nFiles": 1
+        }
+    },
+    "12-4-23":{
+        "header" : {
+            "cloc_url"           : "github.com/AlDanial/cloc",
+            "cloc_version"       : "1.98",
+            "elapsed_seconds"    : 0.00714206695556641,
+            "n_files"            : 1,
+            "n_lines"            : 147,
+            "files_per_second"   : 140.015489384431,
+            "lines_per_second"   : 20582.2769395113
+        },
+        "program.py" :{
+            "blank": 29,
+            "comment": 12,
+            "code": 106,
+            "language": "Python"
+        },
+        "SUM": {
+            "blank": 29,
+            "comment": 12,
+            "code": 106,
+            "nFiles": 1
+        } 
+    }
+}
