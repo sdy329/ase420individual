@@ -15,7 +15,6 @@ def test_command_executor_invalid_command(capsys):
     captured = capsys.readouterr()
     assert captured.out == "Invalid command.\n"
 
-
 def test_time_tracker_cli_run():
     time_tracker = TimeTrackerCLI()
     with patch.object(CommandExecutor, 'execute_command') as mock_execute_command:
@@ -23,7 +22,6 @@ def test_time_tracker_cli_run():
         time_tracker.run(args)
         mock_execute_command.assert_called_once_with(args)
 
-        
 def test_time_tracker_cli_close_connection():
     time_tracker = TimeTrackerCLI()
     with patch.object(DatabaseManager, 'close_connection') as mock_close_connection:

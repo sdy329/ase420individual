@@ -1,13 +1,15 @@
 import pytest
+from unittest.mock import patch
 from program import (
     DatabaseManager,
     QueryByDateStrategy,
+    TimeTrackerCLI,
+    parse_args,
 )
 
 @pytest.fixture
 def database_manager():
     return DatabaseManager(':memory:')
-
 
 def test_create_table(database_manager):
     database_manager.create_table()
