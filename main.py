@@ -1,9 +1,9 @@
+import argparse
 import sqlite3
 from datetime import datetime
 
 class DatabaseManager:
     DATE_FORMAT = '%Y/%m/%d'
-    READABLE_DATE_FORMAT = 'YEAR/MONTH/DAY'
     TABLE_NAME = 'time_records'
 
     def __init__(self, db_name='time_tracker.db'):
@@ -25,18 +25,11 @@ class DatabaseManager:
         self.conn.commit()
 
     def insert_record(self, date, start_time, end_time, task, tag):
-        try:
-            datetime.strptime(date, self.DATE_FORMAT)
-        except ValueError:
-            print(f"Error: Invalid date format. Please provide a date in the format {self.READABLE_DATE_FORMAT}.")
-            return
-
         self.cursor.execute(f'''
             INSERT INTO {self.TABLE_NAME} (date, start_time, end_time, task, tag)
             VALUES (?, ?, ?, ?, ?)
         ''', (date, start_time, end_time, task, tag))
         self.conn.commit()
-        print("Record inserted.")
 
     def query_records(self, query):
         try:
@@ -54,7 +47,7 @@ class DatabaseManager:
         return self.cursor.fetchall()
 
     def clear_db(self):
-        self.cursor.execute(f'DROP TABLE {self.TABLE_NAME}')
+        self.cursor.execute(f'DELETE FROM {self.TABLE_NAME}')
         self.conn.commit()
 
     def close_connection(self):
@@ -63,109 +56,61 @@ class DatabaseManager:
 class RecordCommand:
     @staticmethod
     def execute(args, time_tracker):
-        date = args[0]
-        start_time = args[1]
-        end_time = args[2]
-        task = args[3]
-        tag = args[4]
+        date = args.date
+        start_time = args.start_time
+        end_time = args.end_time
+        task = args.task
+        tag = args.tag
 
         if date.lower() == 'today':
             date = datetime.now().strftime(DatabaseManager.DATE_FORMAT)
-        
+
         time_tracker.db_manager.insert_record(date, start_time, end_time, task, tag)
 
 class QueryCommand:
     @staticmethod
     def execute(args, time_tracker):
-        records = time_tracker.db_manager.query_records(args[0])
+        records = time_tracker.db_manager.query_records(args.query)
 
         for record in records:
             print(record)
-
-class QuitCommand:
-    @staticmethod
-    def execute(args, time_tracker):
-        time_tracker.db_manager.close_connection()
-        print("Quitting...")
-        exit()
-
-class ClearCommand:
-    @staticmethod
-    def execute(args, time_tracker):
-        time_tracker.db_manager.clear_db()
-        print("Database cleared.")
-
-class HelpCommand:
-    @staticmethod
-    def execute(args, time_tracker):
-        print("Commands:")
-        print("record <date> <start_time> <end_time> <task> <tag>")
-        print("query <date|'today'|':tag'|'task'>")
-        print("clear")
-        print("help")
-        print("quit")
 
 class TimeTrackerCLI:
     def __init__(self):
         self.db_manager = DatabaseManager()
 
-    def run(self):
-        print("Welcome to Time Tracker CLI. Enter 'help' for a list of commands.")
-        while True:
-            user_input = input("Enter a command: ")
-            self.parse_input(user_input)
-
-    def parse_input(self, user_input):
-        parts = user_input.split()
-        if not parts:
+    def run_command(self, command_str, args):
+        if command_str == 'record':
+            command = RecordCommand()
+        elif command_str == 'query':
+            command = QueryCommand()
+        else:
+            print("Invalid command.")
             return
 
-        command_str = parts[0]
-        args = parts[1:]
-
-        in_quote = False
-        current_arg = ""
-        parsed_args = []
-
-        for part in args:
-            if part.startswith("'") and part.endswith("'"):
-                parsed_args.append(part[1:-1])
-            elif part.startswith("'"):
-                in_quote = True
-                current_arg += part[1:]
-            elif part.endswith("'"):
-                in_quote = False
-                current_arg += " " + part[:-1]
-                parsed_args.append(current_arg)
-                current_arg = ""
-            elif in_quote:
-                current_arg += " " + part
-            else:
-                parsed_args.append(part)
-        
-        if in_quote:
-            print("Error: Unmatched quote in input.")
-            return
-        
-        try:
-            if command_str == 'record':
-                self.run_command(RecordCommand(), parsed_args)
-            elif command_str == 'query':
-                self.run_command(QueryCommand(), parsed_args)
-            elif command_str == 'quit':
-                self.run_command(QuitCommand(), parsed_args)
-            elif command_str == 'clear':
-                self.run_command(ClearCommand(), parsed_args)
-            elif command_str == 'help':
-                self.run_command(HelpCommand(), parsed_args)
-        except IndexError:
-            print("Error: Not enough arguments.")
-        
-
-    def run_command(self, command, args):
         command.execute(args, self)
 
-if __name__ == '__main__':
+def parse_args():
+    parser = argparse.ArgumentParser(description='Time Tracker CLI')
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+
+    record_parser = subparsers.add_parser('record', help='Record time usage')
+    record_parser.add_argument('date', help='Date in the format YYYY/MM/DD or "today"')
+    record_parser.add_argument('start_time', help='Start time in the format HH:MM')
+    record_parser.add_argument('end_time', help='End time in the format HH:MM')
+    record_parser.add_argument('task', help='Task description')
+    record_parser.add_argument('tag', help='Tag for the activity')
+
+    query_parser = subparsers.add_parser('query', help='Query time usage')
+    query_parser.add_argument('query', help='Query string')
+
+    return parser.parse_args()
+
+def main():
+    args = parse_args()
     time_tracker = TimeTrackerCLI()
-    time_tracker.run()
+    time_tracker.run_command(args.command, args)
     time_tracker.db_manager.close_connection()
+
+if __name__ == '__main__':
+    main()
