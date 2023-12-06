@@ -31,7 +31,7 @@ pytest test/
 
 ## Authors
 
-- **Spencer Yates** - [Github](https://github.com/sdy329)
+- **Spencer Yates** - [LinkedIn](https://www.linkedin.com/in/sdy329)
 
 ## License
 
