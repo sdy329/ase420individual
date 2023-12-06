@@ -1,14 +1,6 @@
 import pytest
-from unittest.mock import patch
-from program import (
-    DatabaseManager,
-    QueryByDateStrategy,
-    QueryByTagStrategy,
-    QueryByTaskStrategy,
-    QueryByDateRangeStrategy,
-    TimeTrackerCLI,
-    parse_args,
-)
+from src.databasemanager import DatabaseManager
+from src.strategies import QueryByDateStrategy, QueryByTagStrategy, QueryByTaskStrategy, QueryByDateRangeStrategy
 
 @pytest.fixture
 def database_manager():

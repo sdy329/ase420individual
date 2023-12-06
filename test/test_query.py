@@ -1,11 +1,6 @@
 import pytest
 from test.test_databaseManager import database_manager
-from program import (
-    QueryByDateStrategy,
-    QueryByTagStrategy,
-    QueryByTaskStrategy,
-    QueryByDateRangeStrategy,
-)
+from src.strategies import QueryByDateStrategy, QueryByTagStrategy, QueryByTaskStrategy, QueryByDateRangeStrategy
 
 def test_query_records_by_tag(database_manager):
     date = '2023/12/01'

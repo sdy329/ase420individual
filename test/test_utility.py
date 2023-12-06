@@ -1,11 +1,8 @@
 import pytest
 from unittest.mock import Mock, patch
-from program import (
-    DatabaseManager,
-    CommandExecutor,
-    TimeTrackerCLI,
-    parse_args,
-)
+from src.commands import CommandExecutor
+from src.databasemanager import DatabaseManager
+from src.timetrackercli import TimeTrackerCLI
 
 
 def test_command_executor_invalid_command(capsys):

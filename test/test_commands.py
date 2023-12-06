@@ -1,13 +1,7 @@
 import pytest
 from unittest.mock import Mock
-from program import (
-    TimeTrackerCLI,
-    RecordCommand,
-    QueryCommand,
-    ReportCommand,
-    PriorityCommand,
-    ClearCommand,
-)
+from program import TimeTrackerCLI
+from src.commands import RecordCommand, QueryCommand, ReportCommand, PriorityCommand, ClearCommand
 
 @pytest.fixture
 def time_tracker():
