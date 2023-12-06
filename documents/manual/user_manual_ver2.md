@@ -73,7 +73,7 @@ Examples:
 
 ### priority
 
-Returns the tag with the highest time spent on it.
+Returns tags in order of time spent on them (highest to lowest).
 
 Format: `priority`
 

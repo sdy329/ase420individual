@@ -10,6 +10,8 @@ The following features are currently implemented:
 - Query by date
 - Query by tag
 - Query by task
+- Report by date range
+- Check priority of tasks
 
 ## Installing
 

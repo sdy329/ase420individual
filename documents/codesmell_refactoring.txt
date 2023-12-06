@@ -2,8 +2,14 @@ Code Smells
 Magic Variables x2
 Long Function
 Code Duplication
-SRP violation
+SRP violation x2
+Dead Code
+Lazy Class
+Data Clumps
+Speculative Generality
 
 Refactorings
 Extract Constants
 Extract Method x2
+Delete Code
+Replace Magic Number with Symbolic Constant
