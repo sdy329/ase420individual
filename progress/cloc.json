@@ -67,5 +67,52 @@
             "code": 178,
             "nFiles": 1
         }
+    },
+    "12-6-23": {
+        "header" : {
+        "cloc_url"           : "github.com/AlDanial/cloc",
+        "cloc_version"       : "1.98",
+        "elapsed_seconds"    : 0.0131649971008301,
+        "n_files"            : 5,
+        "n_lines"            : 239,
+        "files_per_second"   : 379.794994385889,
+        "lines_per_second"   : 18154.2007316455
+    },
+      ".\\src\\commands.py" :{
+        "blank": 17,
+        "comment": 0,
+        "code": 83,
+        "language": "Python"
+    },
+      ".\\src\\databasemanager.py" :{
+        "blank": 9,
+        "comment": 13,
+        "code": 42,
+        "language": "Python"
+    },
+      ".\\src\\timetrackercli.py" :{
+        "blank": 11,
+        "comment": 0,
+        "code": 34,
+        "language": "Python"
+    },
+      ".\\src\\strategies.py" :{
+        "blank": 4,
+        "comment": 0,
+        "code": 19,
+        "language": "Python"
+    },
+      "program.py" :{
+        "blank": 1,
+        "comment": 0,
+        "code": 6,
+        "language": "Python"
+    },
+      "SUM": {
+        "blank": 42,
+        "comment": 13,
+        "code": 184,
+        "nFiles": 5
+    } 
     }
 }
