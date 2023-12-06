@@ -11,9 +11,8 @@ from program import (
 def test_command_executor_invalid_command(capsys):
     command_executor = CommandExecutor(TimeTrackerCLI())
     args = Mock(command='invalid_command')
-    command_executor.execute_command(args)
-    captured = capsys.readouterr()
-    assert captured.out == "Invalid command.\n"
+    result = command_executor.execute_command(args)
+    assert result == "Invalid command."
 
 def test_time_tracker_cli_run():
     time_tracker = TimeTrackerCLI()

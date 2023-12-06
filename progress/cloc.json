@@ -44,5 +44,28 @@
             "code": 106,
             "nFiles": 1
         } 
+    },
+    "12-5-23": {
+        "header" : {
+            "cloc_url"           : "github.com/AlDanial/cloc",
+            "cloc_version"       : "1.98",
+            "elapsed_seconds"    : 0.00808191299438477,       
+            "n_files"            : 1,
+            "n_lines"            : 235,
+            "files_per_second"   : 123.733081597734,
+            "lines_per_second"   : 29077.2741754676
+        },
+          "program.py" :{
+            "blank": 44,
+            "comment": 13,
+            "code": 178,
+            "language": "Python"
+        },
+          "SUM": {
+            "blank": 44,
+            "comment": 13,
+            "code": 178,
+            "nFiles": 1
+        }
     }
 }
